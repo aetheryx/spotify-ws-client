@@ -1,0 +1,48 @@
+message Item {
+  required string uri = 1;
+  optional Attributes attributes = 2;
+
+  message Attributes {
+    optional string addedBy = 1;
+    optional int64 timestamp = 2;
+  }
+}
+
+message Op {
+  enum Kind {
+    Unknown = 0;
+    Add = 2;
+    Remove = 3;
+    Move = 4;
+    UpdateItemAttributes = 5;
+    UpdateListAttributes = 6;
+  }
+
+  required Kind kind = 1;
+  optional Added added = 2;
+  optional Removed removed = 3;
+  optional Moved moved = 4;
+
+  message Added {
+    required int32 index = 1;
+    repeated Item items = 2;
+  }
+  
+  message Removed {
+    required int32 index = 1;
+    required int32 length = 2;
+    repeated Item items = 3;
+  }
+
+  message Moved {
+    required int32 fromIndex = 1;
+    required int32 length = 2;
+    required int32 toIndex = 3;
+    repeated Item items = 4;
+  }
+}
+
+message PlaylistMutate {
+  required string uri = 1;
+  repeated Op ops = 4;
+}
