@@ -5,6 +5,7 @@ import { WebSocket } from "ws";
 import { assert } from "console";
 import { setTimeout } from 'node:timers/promises';
 import { WebsocketEvent, WebsocketEventType } from "../spotify-types/events/websocket-event.js";
+import { User } from '../spotify-types/entities/user.js';
 import { StateHandler } from "./state-handler.js";
 import { ProtobufHandler } from "./protobuf-handler.js";
 
@@ -35,6 +36,7 @@ export class SpotifyClient extends TypedEventEmitter {
   });
 
   public state: State = State.IDLE;
+  public selfUser: User | null = null;
   public stateHandler = new StateHandler(this);
   private protobufHandler = new ProtobufHandler(this);
 
@@ -125,6 +127,14 @@ export class SpotifyClient extends TypedEventEmitter {
     }
   }
 
+  private async getSelfUser(): Promise<User> {
+    const response = await this.http.get('me', {
+      responseType: 'json',
+    });
+
+    return User.parse(response.body);
+  }
+
   private async subscribe(message: WebsocketEvent): Promise<void> {
     const connectionID = message.headers['Spotify-Connection-Id']?.toString();
     assert(connectionID);
@@ -137,12 +147,12 @@ export class SpotifyClient extends TypedEventEmitter {
       responseType: 'json',
     });
 
-    if (response.body?.message === 'Subscription created') {
-      this.setState(State.SUBSCRIBED);
-      this.connectResolve?.();
-      return;
+    if (response.body?.message !== 'Subscription created') {
+      throw new Error('failed to subscribe');
     }
 
-    console.error('failed to subscribe', response.body);
+    this.selfUser = await this.getSelfUser();
+    this.setState(State.SUBSCRIBED);
+    this.connectResolve?.();
   }
 }

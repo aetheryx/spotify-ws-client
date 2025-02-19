@@ -1,5 +1,5 @@
 message LikedItem {
-  required string id = 2;
+  required bytes id = 2;
   required bool removed = 6;
 }
 

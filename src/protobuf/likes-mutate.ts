@@ -4,7 +4,7 @@ import _m0 from "protobufjs/minimal.js";
 export const protobufPackage = "";
 
 export interface LikedItem {
-  id: string;
+  id: Buffer;
   removed: boolean;
 }
 
@@ -13,13 +13,13 @@ export interface LikesMutation {
 }
 
 function createBaseLikedItem(): LikedItem {
-  return { id: "", removed: false };
+  return { id: Buffer.alloc(0), removed: false };
 }
 
 export const LikedItem = {
   encode(message: LikedItem, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.id !== "") {
-      writer.uint32(18).string(message.id);
+    if (message.id.length !== 0) {
+      writer.uint32(18).bytes(message.id);
     }
     if (message.removed === true) {
       writer.uint32(48).bool(message.removed);
@@ -39,7 +39,7 @@ export const LikedItem = {
             break;
           }
 
-          message.id = reader.string();
+          message.id = reader.bytes() as Buffer;
           continue;
         case 6:
           if (tag !== 48) {
@@ -59,14 +59,14 @@ export const LikedItem = {
 
   fromJSON(object: any): LikedItem {
     return {
-      id: isSet(object.id) ? String(object.id) : "",
+      id: isSet(object.id) ? Buffer.from(bytesFromBase64(object.id)) : Buffer.alloc(0),
       removed: isSet(object.removed) ? Boolean(object.removed) : false,
     };
   },
 
   toJSON(message: LikedItem): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
+    message.id !== undefined && (obj.id = base64FromBytes(message.id !== undefined ? message.id : Buffer.alloc(0)));
     message.removed !== undefined && (obj.removed = message.removed);
     return obj;
   },
@@ -77,7 +77,7 @@ export const LikedItem = {
 
   fromPartial<I extends Exact<DeepPartial<LikedItem>, I>>(object: I): LikedItem {
     const message = createBaseLikedItem();
-    message.id = object.id ?? "";
+    message.id = object.id ?? Buffer.alloc(0);
     message.removed = object.removed ?? false;
     return message;
   },
@@ -144,6 +144,50 @@ export const LikesMutation = {
     return message;
   },
 };
+
+declare var self: any | undefined;
+declare var window: any | undefined;
+declare var global: any | undefined;
+var tsProtoGlobalThis: any = (() => {
+  if (typeof globalThis !== "undefined") {
+    return globalThis;
+  }
+  if (typeof self !== "undefined") {
+    return self;
+  }
+  if (typeof window !== "undefined") {
+    return window;
+  }
+  if (typeof global !== "undefined") {
+    return global;
+  }
+  throw "Unable to locate global object";
+})();
+
+function bytesFromBase64(b64: string): Uint8Array {
+  if (tsProtoGlobalThis.Buffer) {
+    return Uint8Array.from(tsProtoGlobalThis.Buffer.from(b64, "base64"));
+  } else {
+    const bin = tsProtoGlobalThis.atob(b64);
+    const arr = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; ++i) {
+      arr[i] = bin.charCodeAt(i);
+    }
+    return arr;
+  }
+}
+
+function base64FromBytes(arr: Uint8Array): string {
+  if (tsProtoGlobalThis.Buffer) {
+    return tsProtoGlobalThis.Buffer.from(arr).toString("base64");
+  } else {
+    const bin: string[] = [];
+    arr.forEach((byte) => {
+      bin.push(String.fromCharCode(byte));
+    });
+    return tsProtoGlobalThis.btoa(bin.join(""));
+  }
+}
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 

@@ -10,6 +10,7 @@ export const Track = entity(EntityType.Track)
   .merge(ExternalIDs)
   .extend({
     album: Album,
+    name: z.string(),
     artists: z.array(Artist),
     duration_ms: z.number(),
     explicit: z.boolean(),

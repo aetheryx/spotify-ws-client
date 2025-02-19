@@ -2,6 +2,11 @@ import { LikesMutation } from "../protobuf/likes-mutate.js";
 import { Op_Added, Op_Kind, Op_Moved, Op_Removed, PlaylistMutate } from "../protobuf/playlist-mutate.js";
 import { WebsocketEvent } from "../spotify-types/events/websocket-event";
 import { SpotifyClient } from "./client";
+import { BigNumber } from 'bignumber.js';
+
+const SpotifyB62 = BigNumber.clone({
+  ALPHABET: '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
+});
 
 export class ProtobufHandler {
   constructor(
@@ -13,16 +18,25 @@ export class ProtobufHandler {
   private onRawProtobufEvent(event: WebsocketEvent, payload: string): void {
     const url = new URL(event.uri);
     const buf = Buffer.from(payload, 'base64');
+
+    if (
+      url.pathname === `/collection/${this.client.selfUser?.id}` &&
+      event.headers['Content-Type'] === 'application/octet-stream'
+    ) {
+      const likesMutation = LikesMutation.decode(buf);
+      return this.handleLikeMutation(likesMutation);
+    }
+
     if (url.pathname.startsWith('/v2/playlist/')) {
       const playlistMutate = PlaylistMutate.decode(buf);
       return this.handlePlaylistMutate(playlistMutate);
     }
+  }
 
-    if (url.pathname.startsWith('/collection') && event.headers['Content-Type'] === 'application/octet-stream') {
-      const likeMutation = LikesMutation.decode(buf);
-      console.log(buf.toString('hex'));
-      // console.log(likeMutation.likeItems[0].id.toS);
-    }
+  private handleLikeMutation(likeMutation: LikesMutation): void {
+    const id = Buffer.from(likeMutation.likeItems[0].id);
+    const b62 = new SpotifyB62(id.toString('hex'), 16);
+    console.log('b62', b62.toString(62));
   }
 
   private handlePlaylistMutate(playlistMutate: PlaylistMutate): void {

@@ -15,6 +15,7 @@ export const Album = entity(EntityType.Album)
   .merge(ReleaseDate)
   .merge(ExternalURLs)
   .extend({
+    name: z.string(),
     album_type: z.nativeEnum(AlbumType),
     images: z.array(Image),
     artists: z.array(Artist),
