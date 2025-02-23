@@ -1,70 +1,43 @@
 import { SpotifyAuthorizationStrategy } from './auth/spotify-authorization-strategy.js';
-import { SpotifyClient, State } from './client/client.js';
+import { SpotifyClient } from './client/client.js';
 
 const client = new SpotifyClient({
   authorizationStrategy: new SpotifyAuthorizationStrategy(process.env.SPOTIFY_COOKIE!),
 });
 
-client.on('stateChanged', (s) => {
-  console.log(`state = ${State[s]}`)
-})
-
-client.on('playerVolumeChanged', (n, old) => {
-  console.log('playerVolumeChanged', n);
+client.socket.on('stateChanged', (s) => {
+  console.log(`state = ${s}`)
 });
 
-client.on('playerRepeatChanged', (n, old) => {
-  console.log('playerRepeatChanged', n);
+// client.socket.on('event', e => {
+//   console.log('event', e);
+// })
+
+client.player.on('volumeChanged', d => {
+  console.log('volumeChanged', d);
+});
+client.player.on('shuffleChanged', d => {
+  console.log('shuffleChanged', d);
+});
+client.player.on('repeatChanged', d => {
+  console.log('repeatChanged', d);
+});
+client.player.on('isPlayingChanged', d => {
+  console.log('isPlayingChanged', d);
+});
+client.player.on('itemChanged', d => {
+  console.log('itemChanged', d);
+});
+client.player.on('progressChanged', d => {
+  console.log('progressChanged', d);
 });
 
-client.on('playerShuffleChanged', (n) => {
-  console.log('playerShuffleChanged', n);
+client.playlists.on('likesMutation', d => {
+  console.log('likesMutation', d);
+});
+client.playlists.on('playlistMutation', d => {
+  console.log('playlistMutation', d);
 });
 
-client.on('playerIsPlayingChanged', (n) => {
-  console.log('playerIsPlayingChanged', n);
-});
-
-client.on('playerItemChanged', (n, o) => {
-  console.log('playerItemChanged', {
-    name: n.name,
-    artists: n.artists.map(a => a.name)
-  });
-});
-
-client.on('playerDeviceChanged', (d, o) => {
-  console.log('playerDeviceChanged', d);
-})
-
-// client.on('playerProgressChanged', progress => {
-//   console.log('playerProgressChanged', `${Math.floor(progress / 1000)}s`);
-// });
-
-client.on('playlistItemAdded', (playlistURI, item) => {
-  console.log('playlistItemAdded', { playlistURI, item });
-})
-
-client.on('playlistItemRemoved', (playlistURI, item) => {
-  console.log('playlistItemRemoved', { playlistURI, item });
-})
-
-client.on('playlistItemMoved', (playlistURI, item) => {
-  console.log('playlistItemMoved', { playlistURI, from: item.fromIndex, to: item.toIndex });
-})
-
-
-// client.on('playerVolumeChanged', (n, old) => {
-//   console.log('playerVolumeChanged', n, old);
-// });
-
-
-// client.on('playerStateChangedRaw', ({ item }) => {
-//   console.log(item.artists.map(a => a.name), item.name);
-// });
-
-// client.on('deviceStateChangedRaw', (n, old) => {
-//   console.log(n);
-//   console.log(old);
-// });
 
 await client.connect();

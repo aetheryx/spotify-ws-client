@@ -1,9 +1,0 @@
-message LikedItem {
-  required bytes id = 2;
-  required bool removed = 6;
-}
-
-message LikesMutation {
-  repeated LikedItem likeItems = 1;
-}
-

@@ -1,0 +1,13 @@
+// {"items":[
+//   {"type":"track","unheard":false,"addedAt":1740333258,"removed":false,"identifier":"6oEC3xbIgUG2TEUXZXUFCv"}
+// ]}
+
+message LikesMutationItem {
+  required bytes identifier = 2;
+  required bool removed = 6;
+}
+
+message LikesMutation {
+  repeated LikesMutationItem items = 1;
+}
+

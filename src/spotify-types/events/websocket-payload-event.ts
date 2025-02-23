@@ -1,6 +1,6 @@
 import { DeviceStateChangedEvent } from "./device-state-changed/device-state-changed";
 import { PlayerStateChangedEvent } from "./player-state-changed/player-state-changed";
-import { WebsocketPayloadType } from "./websocket-event";
+import { WebsocketPayloadType } from "./websocket-message";
 
 export interface GenericWebsocketPayloadEvent<T extends WebsocketPayloadType = WebsocketPayloadType, E = Record<string, unknown>> {
   type: T;

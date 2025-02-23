@@ -96,7 +96,7 @@ export interface Op_Moved {
   items: Item[];
 }
 
-export interface PlaylistMutate {
+export interface PlaylistMutation {
   uri: string;
   ops: Op[];
 }
@@ -613,12 +613,12 @@ export const Op_Moved = {
   },
 };
 
-function createBasePlaylistMutate(): PlaylistMutate {
+function createBasePlaylistMutation(): PlaylistMutation {
   return { uri: "", ops: [] };
 }
 
-export const PlaylistMutate = {
-  encode(message: PlaylistMutate, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const PlaylistMutation = {
+  encode(message: PlaylistMutation, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.uri !== "") {
       writer.uint32(10).string(message.uri);
     }
@@ -628,10 +628,10 @@ export const PlaylistMutate = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): PlaylistMutate {
+  decode(input: _m0.Reader | Uint8Array, length?: number): PlaylistMutation {
     const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBasePlaylistMutate();
+    const message = createBasePlaylistMutation();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -658,14 +658,14 @@ export const PlaylistMutate = {
     return message;
   },
 
-  fromJSON(object: any): PlaylistMutate {
+  fromJSON(object: any): PlaylistMutation {
     return {
       uri: isSet(object.uri) ? String(object.uri) : "",
       ops: Array.isArray(object?.ops) ? object.ops.map((e: any) => Op.fromJSON(e)) : [],
     };
   },
 
-  toJSON(message: PlaylistMutate): unknown {
+  toJSON(message: PlaylistMutation): unknown {
     const obj: any = {};
     message.uri !== undefined && (obj.uri = message.uri);
     if (message.ops) {
@@ -676,12 +676,12 @@ export const PlaylistMutate = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<PlaylistMutate>, I>>(base?: I): PlaylistMutate {
-    return PlaylistMutate.fromPartial(base ?? {});
+  create<I extends Exact<DeepPartial<PlaylistMutation>, I>>(base?: I): PlaylistMutation {
+    return PlaylistMutation.fromPartial(base ?? {});
   },
 
-  fromPartial<I extends Exact<DeepPartial<PlaylistMutate>, I>>(object: I): PlaylistMutate {
-    const message = createBasePlaylistMutate();
+  fromPartial<I extends Exact<DeepPartial<PlaylistMutation>, I>>(object: I): PlaylistMutation {
+    const message = createBasePlaylistMutation();
     message.uri = object.uri ?? "";
     message.ops = object.ops?.map((e) => Op.fromPartial(e)) || [];
     return message;
@@ -725,6 +725,8 @@ function longToNumber(long: Long): number {
   return long.toNumber();
 }
 
+// If you get a compile-error about 'Constructor<Long> and ... have no overlap',
+// add '--ts_proto_opt=esModuleInterop=true' as a flag when calling 'protoc'.
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();

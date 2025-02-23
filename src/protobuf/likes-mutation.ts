@@ -3,23 +3,23 @@ import _m0 from "protobufjs/minimal.js";
 
 export const protobufPackage = "";
 
-export interface LikedItem {
-  id: Buffer;
+export interface LikesMutationItem {
+  identifier: Buffer;
   removed: boolean;
 }
 
 export interface LikesMutation {
-  likeItems: LikedItem[];
+  items: LikesMutationItem[];
 }
 
-function createBaseLikedItem(): LikedItem {
-  return { id: Buffer.alloc(0), removed: false };
+function createBaseLikesMutationItem(): LikesMutationItem {
+  return { identifier: Buffer.alloc(0), removed: false };
 }
 
-export const LikedItem = {
-  encode(message: LikedItem, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.id.length !== 0) {
-      writer.uint32(18).bytes(message.id);
+export const LikesMutationItem = {
+  encode(message: LikesMutationItem, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.identifier.length !== 0) {
+      writer.uint32(18).bytes(message.identifier);
     }
     if (message.removed === true) {
       writer.uint32(48).bool(message.removed);
@@ -27,10 +27,10 @@ export const LikedItem = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): LikedItem {
+  decode(input: _m0.Reader | Uint8Array, length?: number): LikesMutationItem {
     const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseLikedItem();
+    const message = createBaseLikesMutationItem();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -39,7 +39,7 @@ export const LikedItem = {
             break;
           }
 
-          message.id = reader.bytes() as Buffer;
+          message.identifier = reader.bytes() as Buffer;
           continue;
         case 6:
           if (tag !== 48) {
@@ -57,40 +57,41 @@ export const LikedItem = {
     return message;
   },
 
-  fromJSON(object: any): LikedItem {
+  fromJSON(object: any): LikesMutationItem {
     return {
-      id: isSet(object.id) ? Buffer.from(bytesFromBase64(object.id)) : Buffer.alloc(0),
+      identifier: isSet(object.identifier) ? Buffer.from(bytesFromBase64(object.identifier)) : Buffer.alloc(0),
       removed: isSet(object.removed) ? Boolean(object.removed) : false,
     };
   },
 
-  toJSON(message: LikedItem): unknown {
+  toJSON(message: LikesMutationItem): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = base64FromBytes(message.id !== undefined ? message.id : Buffer.alloc(0)));
+    message.identifier !== undefined &&
+      (obj.identifier = base64FromBytes(message.identifier !== undefined ? message.identifier : Buffer.alloc(0)));
     message.removed !== undefined && (obj.removed = message.removed);
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<LikedItem>, I>>(base?: I): LikedItem {
-    return LikedItem.fromPartial(base ?? {});
+  create<I extends Exact<DeepPartial<LikesMutationItem>, I>>(base?: I): LikesMutationItem {
+    return LikesMutationItem.fromPartial(base ?? {});
   },
 
-  fromPartial<I extends Exact<DeepPartial<LikedItem>, I>>(object: I): LikedItem {
-    const message = createBaseLikedItem();
-    message.id = object.id ?? Buffer.alloc(0);
+  fromPartial<I extends Exact<DeepPartial<LikesMutationItem>, I>>(object: I): LikesMutationItem {
+    const message = createBaseLikesMutationItem();
+    message.identifier = object.identifier ?? Buffer.alloc(0);
     message.removed = object.removed ?? false;
     return message;
   },
 };
 
 function createBaseLikesMutation(): LikesMutation {
-  return { likeItems: [] };
+  return { items: [] };
 }
 
 export const LikesMutation = {
   encode(message: LikesMutation, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    for (const v of message.likeItems) {
-      LikedItem.encode(v!, writer.uint32(10).fork()).ldelim();
+    for (const v of message.items) {
+      LikesMutationItem.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -107,7 +108,7 @@ export const LikesMutation = {
             break;
           }
 
-          message.likeItems.push(LikedItem.decode(reader, reader.uint32()));
+          message.items.push(LikesMutationItem.decode(reader, reader.uint32()));
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -119,17 +120,15 @@ export const LikesMutation = {
   },
 
   fromJSON(object: any): LikesMutation {
-    return {
-      likeItems: Array.isArray(object?.likeItems) ? object.likeItems.map((e: any) => LikedItem.fromJSON(e)) : [],
-    };
+    return { items: Array.isArray(object?.items) ? object.items.map((e: any) => LikesMutationItem.fromJSON(e)) : [] };
   },
 
   toJSON(message: LikesMutation): unknown {
     const obj: any = {};
-    if (message.likeItems) {
-      obj.likeItems = message.likeItems.map((e) => e ? LikedItem.toJSON(e) : undefined);
+    if (message.items) {
+      obj.items = message.items.map((e) => e ? LikesMutationItem.toJSON(e) : undefined);
     } else {
-      obj.likeItems = [];
+      obj.items = [];
     }
     return obj;
   },
@@ -140,7 +139,7 @@ export const LikesMutation = {
 
   fromPartial<I extends Exact<DeepPartial<LikesMutation>, I>>(object: I): LikesMutation {
     const message = createBaseLikesMutation();
-    message.likeItems = object.likeItems?.map((e) => LikedItem.fromPartial(e)) || [];
+    message.items = object.items?.map((e) => LikesMutationItem.fromPartial(e)) || [];
     return message;
   },
 };

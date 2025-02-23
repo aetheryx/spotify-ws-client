@@ -1,7 +1,7 @@
 import { IncomingHttpHeaders } from 'node:http';
 import { WebsocketPayloadEvent } from './websocket-payload-event';
 
-export enum WebsocketEventType {
+export enum WebsocketMessageType {
   Message = 'message',
 }
 
@@ -10,9 +10,9 @@ export enum WebsocketPayloadType {
   DeviceStateChanged = 'DEVICE_STATE_CHANGED'
 }
 
-export interface WebsocketEvent {
+export interface WebsocketMessage {
   headers: IncomingHttpHeaders;
-  type: WebsocketEventType,
+  type: WebsocketMessageType;
   uri: string;
   payloads?: Array<WebsocketPayload | string>;
 }

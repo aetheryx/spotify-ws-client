@@ -42,7 +42,7 @@ message Op {
   }
 }
 
-message PlaylistMutate {
+message PlaylistMutation {
   required string uri = 1;
   repeated Op ops = 4;
 }

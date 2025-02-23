@@ -1,4 +1,4 @@
-import { WebsocketPayloadType } from "../websocket-event";
+import { WebsocketPayloadType } from "../websocket-message";
 import { GenericWebsocketPayloadEvent } from "../websocket-payload-event";
 import { DeviceState } from "./device-state";
 
