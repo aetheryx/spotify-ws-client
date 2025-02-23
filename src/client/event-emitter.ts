@@ -30,6 +30,9 @@ interface Events {
   playlistItemRemoved: [playlistURI: string, item: Item];
   playlistItemMoved: [playlistURI: string, moved: Op_Moved];
 
+  itemLiked: [itemID: string];
+  itemUnliked: [itemID: string];
+
   deviceAdded: [device: PlayerDevice];
   deviceRemoved: [device: PlayerDevice];
 }

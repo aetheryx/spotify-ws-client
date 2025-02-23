@@ -34,9 +34,15 @@ export class ProtobufHandler {
   }
 
   private handleLikeMutation(likeMutation: LikesMutation): void {
-    const id = Buffer.from(likeMutation.likeItems[0].id);
-    const b62 = new SpotifyB62(id.toString('hex'), 16);
-    console.log('b62', b62.toString(62));
+    for (const likeItem of likeMutation.likeItems) {
+      const b62 = new SpotifyB62(Buffer.from(likeItem.id).toString('hex'), 16);
+      const id = b62.toString(62);
+      if (likeItem.removed) {
+        this.client.emit('itemUnliked', id);
+      } else {
+        this.client.emit('itemLiked', id);
+      }
+    }
   }
 
   private handlePlaylistMutate(playlistMutate: PlaylistMutate): void {
